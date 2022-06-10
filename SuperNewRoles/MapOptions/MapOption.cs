@@ -152,7 +152,7 @@ namespace SuperNewRoles.MapOptions
             RandomMapPolus = CustomOption.CustomOption.Create(436, true, CustomOptionType.Generic, "RMPolusSetting", true, RandomMapOption);
             RandomMapAirship = CustomOption.CustomOption.Create(437, true, CustomOptionType.Generic, "RMAirshipSetting", true, RandomMapOption);
             RandomMapSubmerged = CustomOption.CustomOption.Create(438, true, CustomOptionType.Generic, "RMSubmergedSetting", true, RandomMapOption);
-            //RM?ï¿½ï¿½?ï¿½ï¿½RandomMap?ï¿½ï¿½Ì—ï¿½?ï¿½ï¿½Å‚ï¿½()
+            //RM??¿½?¿½??¿½?¿½RandomMap??¿½?¿½Ì—ï¿½??¿½?¿½Å‚ï¿½()
 
             RestrictDevicesOption = CustomOption.CustomOption.Create(513, false, CustomOptionType.Generic, "RestrictDevicesSetting", true, MapOptionSetting);
             RestrictAdmin = CustomOption.CustomOption.Create(514, false, CustomOptionType.Generic, "RestrictAdminSetting", true, RestrictDevicesOption);
