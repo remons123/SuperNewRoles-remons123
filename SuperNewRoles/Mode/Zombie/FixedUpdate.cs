@@ -1,21 +1,18 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using SuperNewRoles.Helpers;
-using SuperNewRoles.Mode.SuperHostRoles;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
 
 namespace SuperNewRoles.Mode.Zombie
 {
-    class FixedUpdate {
+    class FixedUpdate
+    {
         /*
         [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.SetSkin))]
         class Setcolorskin
         {
             public static void Postfix(PlayerControl __instance, [HarmonyArgument(0)] ref string skinid)
             {
-                SuperNewRolesPlugin.Logger.LogInfo(__instance.nameText.text + ":" + skinid);
+                SuperNewRolesPlugin.Logger.LogInfo(__instance.NameText().text + ":" + skinid);
             }
         }
         [HarmonyPatch(typeof(PlayerControl),nameof(PlayerControl.SetColor))]
@@ -23,7 +20,7 @@ namespace SuperNewRoles.Mode.Zombie
         {
             public static void Postfix(PlayerControl __instance, [HarmonyArgument(0)] ref int colorid)
             {
-                SuperNewRolesPlugin.Logger.LogInfo(__instance.nameText.text+":"+colorid);
+                SuperNewRolesPlugin.Logger.LogInfo(__instance.NameText().text+":"+colorid);
             }
         }
         [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.SetHat))]
@@ -31,7 +28,7 @@ namespace SuperNewRoles.Mode.Zombie
         {
             public static void Postfix(PlayerControl __instance, [HarmonyArgument(0)] ref string colorid)
             {
-                SuperNewRolesPlugin.Logger.LogInfo("[SetHat]"+__instance.nameText.text + ":" + colorid);
+                SuperNewRolesPlugin.Logger.LogInfo("[SetHat]"+__instance.NameText().text + ":" + colorid);
             }
         }
         [HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.SetVisor))]
@@ -39,7 +36,7 @@ namespace SuperNewRoles.Mode.Zombie
         {
             public static void Postfix(PlayerControl __instance, [HarmonyArgument(0)] ref string colorid)
             {
-                SuperNewRolesPlugin.Logger.LogInfo("[SetVisor]" + __instance.nameText.text + ":" + colorid);
+                SuperNewRolesPlugin.Logger.LogInfo("[SetVisor]" + __instance.NameText().text + ":" + colorid);
             }
         }
         */
@@ -50,44 +47,45 @@ namespace SuperNewRoles.Mode.Zombie
         {
             public static void Postfix(HudManager __instance)
             {
-                if (!(AmongUsClient.Instance.GameState == AmongUsClient.GameStates.Started)) return;
+                if (AmongUsClient.Instance.GameState != AmongUsClient.GameStates.Started) return;
                 Mode.ModeHandler.HudUpdate(__instance);
-                if (IsStart && NameChangeTimer != -10 && AmongUsClient.Instance.AmHost && ModeHandler.isMode(ModeId.Zombie) && !FastDestroyableSingleton<HudManager>.Instance.IsIntroDisplayed)
-                if (ModeHandler.isMode(ModeId.Zombie) && IsStart && NameChangeTimer != -10 && AmongUsClient.Instance.AmHost && AmongUsClient.Instance.GameState == AmongUsClient.GameStates.Started && !FastDestroyableSingleton<HudManager>.Instance.IsIntroDisplayed)
-                {
-                    if (NameChangeTimer >= 0f)
+                if (IsStart && NameChangeTimer != -10 && AmongUsClient.Instance.AmHost && ModeHandler.IsMode(ModeId.Zombie) && !FastDestroyableSingleton<HudManager>.Instance.IsIntroDisplayed)
+                    if (ModeHandler.IsMode(ModeId.Zombie) && IsStart && NameChangeTimer != -10 && AmongUsClient.Instance.AmHost && AmongUsClient.Instance.GameState == AmongUsClient.GameStates.Started && !FastDestroyableSingleton<HudManager>.Instance.IsIntroDisplayed)
                     {
-                        NameChangeTimer -= Time.deltaTime;
-                    } else if(NameChangeTimer != -10)
-                    {
-                        foreach (PlayerControl p in CachedPlayer.AllPlayers)
+                        if (NameChangeTimer >= 0f)
                         {
-                            p.RpcSetName("　");
-                            if (p.isImpostor())
-                            {
-                                main.SetZombie(p);
-                            }
+                            NameChangeTimer -= Time.deltaTime;
                         }
-                        byte BlueIndex = 1;
-                        foreach (PlayerControl p in CachedPlayer.AllPlayers)
+                        else if (NameChangeTimer != -10)
                         {
-                            if (!p.IsZombie())
+                            foreach (PlayerControl p in CachedPlayer.AllPlayers)
                             {
-                                /*
-                                p.UncheckSetVisor("visor_EmptyVisor");
-                                */
-                                p.RpcSetColor(BlueIndex);
-                                /*
-                                p.RpcSetHat("hat_police");
-                                
-                                p.RpcSetSkin("skin_Police");
-                                */
-                                ZombieOptions.ChengeSetting(p);
+                                p.RpcSetName("　");
+                                if (p.IsImpostor())
+                                {
+                                    Main.SetZombie(p);
+                                }
                             }
+                            byte BlueIndex = 1;
+                            foreach (PlayerControl p in CachedPlayer.AllPlayers)
+                            {
+                                if (!p.IsZombie())
+                                {
+                                    /*
+                                    p.UncheckSetVisor("visor_EmptyVisor");
+                                    */
+                                    p.RpcSetColor(BlueIndex);
+                                    /*
+                                    p.RpcSetHat("hat_police");
+
+                                    p.RpcSetSkin("skin_Police");
+                                    */
+                                    ZombieOptions.ChengeSetting(p);
+                                }
+                            }
+                            NameChangeTimer = -10;
                         }
-                        NameChangeTimer = -10;
                     }
-                }
             }
         }
         public static int FixedUpdateTimer = 0;
@@ -102,24 +100,24 @@ namespace SuperNewRoles.Mode.Zombie
                 {
                     foreach (PlayerControl p in CachedPlayer.AllPlayers)
                     {
-                        p.RpcSetNamePrivate(string.Format(ModTranslation.getString("ZombieTimerText"), (int)NameChangeTimer + 1));
+                        p.RpcSetNamePrivate(string.Format(ModTranslation.GetString("ZombieTimerText"), (int)NameChangeTimer + 1));
                     }
                 }
                 else
                 {
-                    foreach (int pint in main.ZombiePlayers)
+                    foreach (int pint in Main.ZombiePlayers)
                     {
-                        var p1 = ModHelpers.playerById((byte)pint);
+                        var p1 = ModHelpers.PlayerById((byte)pint);
                         foreach (PlayerControl p in CachedPlayer.AllPlayers)
                         {
                             if (!p.IsZombie())
                             {
-                                if (p != null && p.isAlive() && !p.Data.Disconnected)
+                                if (p != null && p.IsAlive() && !p.Data.Disconnected)
                                 {
                                     var DistanceData = Vector2.Distance(p.transform.position, p1.transform.position);
                                     if (DistanceData <= 0.5f)
                                     {
-                                        main.SetZombie(p);
+                                        Main.SetZombie(p);
                                     }
                                 }
                             }

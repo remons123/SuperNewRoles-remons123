@@ -1,19 +1,16 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using static SuperNewRoles.EndGame.CheckGameEndPatch;
 
 namespace SuperNewRoles.Mode.RandomColor
 {
-    class main
+    class Main
     {
         public static bool CheckEndGame(ShipStatus __instance, PlayerStatistics statistics)
         {
-            if (CheckAndEndGameForSabotageWin(__instance)) return false;
-            if (CheckAndEndGameForImpostorWin(__instance, statistics)) return false;
-            if (CheckAndEndGameForCrewmateWin(__instance, statistics)) return false;
-            if (!PlusModeHandler.isMode(PlusModeId.NotTaskWin) && CheckAndEndGameForTaskWin(__instance)) return false;
-            return false;
+            return CheckAndEndGameForSabotageWin(__instance)
+                || CheckAndEndGameForImpostorWin(__instance, statistics)
+                ? false
+                : !CheckAndEndGameForCrewmateWin(__instance, statistics)
+&& !PlusModeHandler.IsMode(PlusModeId.NotTaskWin) && CheckAndEndGameForTaskWin(__instance) && false;
         }
         public static void CustomEndGame(ShipStatus __instance, GameOverReason reason, bool showAd)
         {
@@ -66,19 +63,12 @@ namespace SuperNewRoles.Mode.RandomColor
         {
             if (statistics.TeamImpostorsAlive >= statistics.TotalAlive - statistics.TeamImpostorsAlive && statistics.TeamJackalAlive == 0)
             {
-                GameOverReason endReason;
-                switch (TempData.LastDeathReason)
+                var endReason = TempData.LastDeathReason switch
                 {
-                    case DeathReason.Exile:
-                        endReason = GameOverReason.ImpostorByVote;
-                        break;
-                    case DeathReason.Kill:
-                        endReason = GameOverReason.ImpostorByKill;
-                        break;
-                    default:
-                        endReason = GameOverReason.ImpostorByVote;
-                        break;
-                }
+                    DeathReason.Exile => GameOverReason.ImpostorByVote,
+                    DeathReason.Kill => GameOverReason.ImpostorByKill,
+                    _ => GameOverReason.ImpostorByVote,
+                };
                 CustomEndGame(__instance, endReason, false);
                 return true;
             }
@@ -97,7 +87,7 @@ namespace SuperNewRoles.Mode.RandomColor
         public static void EndGameForSabotage(ShipStatus __instance)
         {
             CustomEndGame(__instance, GameOverReason.ImpostorBySabotage, false);
-            return;  
+            return;
         }
     }
 }

@@ -1,12 +1,11 @@
-using HarmonyLib;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using SuperNewRoles.Patch;
-using System;
-using System.Collections.Generic;
+// 旧式翻訳システム
+
+/*using System.Collections.Generic;
 using System.IO;
 using System.Reflection;
-using System.Text.RegularExpressions;
+using HarmonyLib;
+using Newtonsoft.Json.Linq;
+using SuperNewRoles.Patch;
 using UnityEngine;
 
 namespace SuperNewRoles
@@ -14,7 +13,7 @@ namespace SuperNewRoles
     public class ModTranslation
     {
         public static int defaultLanguage = (int)SupportedLangs.English;
-        public static Dictionary<string, Dictionary<int, string>> stringData = new Dictionary<string, Dictionary<int, string>>();
+        public static Dictionary<string, Dictionary<int, string>> stringData = new();
 
         public ModTranslation()
         {
@@ -54,23 +53,25 @@ namespace SuperNewRoles
                 }
             }
         }
-        
+
         public static uint GetLang()
         {
             return SaveManager.LastLanguage;
         }
-        public static string getString(string key, string def = null)
+        public static string GetString(string key, string def = null)
         {
             try
             {
                 return stringData[key][(int)GetLang()].Replace("\\n", "\n");
-            } catch
+            }
+            catch
             {
                 try
                 {
                     return stringData[key][defaultLanguage].Replace("\\n", "\n");
                 }
-                catch {
+                catch
+                {
                     return key;
                 }
             }
@@ -82,15 +83,15 @@ namespace SuperNewRoles
             key = key.Replace("\\", ".");
             key = "SuperNewRoles.Resources." + key;
 
-            return ModHelpers.loadSpriteFromResources(key, pixelsPerUnit);
+            return ModHelpers.LoadSpriteFromResources(key, pixelsPerUnit);
         }
         [HarmonyPatch(typeof(LanguageSetter), nameof(LanguageSetter.SetLanguage))]
         class SetLanguagePatch
         {
             static void Postfix()
             {
-                ClientOptionsPatch.updateTranslations();
+                ClientOptionsPatch.UpdateTranslations();
             }
         }
     }
-}
+}*/

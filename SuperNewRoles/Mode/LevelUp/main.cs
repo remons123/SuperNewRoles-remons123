@@ -1,4 +1,5 @@
-﻿using SuperNewRoles.CustomOption;
+/*
+using SuperNewRoles.CustomOption;
 using SuperNewRoles.Helpers;
 using System;
 using System.Collections.Generic;
@@ -7,13 +8,13 @@ using UnityEngine;
 
 namespace SuperNewRoles.Mode.LevelUp
 {
-    class main
+    class Main
     {
         public static void ClearAndReloads()
         {
             UpdateTime = 12f;
             Count = 0;
-            MurderCount = (int)LevelUpMurder.getFloat();
+            MurderCount = (int)LevelUpMurder.GetFloat();
         }
         public static float UpdateTime = 2f;
         public static float Count = 0;
@@ -21,7 +22,7 @@ namespace SuperNewRoles.Mode.LevelUp
         public static CustomOption.CustomOption LevelUpMurder;
         public static void Load()
         {
-            LevelUpMurder = CustomOption.CustomOption.Create(426, false, CustomOptionType.Generic, "レベルアップモード:1秒あたりのキル回数", 25, 5,100,5, ModeHandler.ModeSetting);
+            LevelUpMurder = CustomOption.CustomOption.Create(527, false, CustomOptionType.Generic, "レベルアップモード:1秒あたりのキル回数", 25, 5,100,5, ModeHandler.ModeSetting);
         }
         public static void FixedUpdate()
         {
@@ -56,3 +57,6 @@ namespace SuperNewRoles.Mode.LevelUp
         }
     }
 }
+
+}
+*/

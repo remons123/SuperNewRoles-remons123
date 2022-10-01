@@ -1,6 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
 
 namespace SuperNewRoles.Sabotage
@@ -8,10 +5,10 @@ namespace SuperNewRoles.Sabotage
     public static class IconManager
     {
         private static Sprite CognitiveDeficitbuttonSprite;
-        public static Sprite CognitiveDeficitgetButtonSprite()
+        public static Sprite CognitiveDeficitGetButtonSprite()
         {
             if (CognitiveDeficitbuttonSprite) return CognitiveDeficitbuttonSprite;
-            CognitiveDeficitbuttonSprite = ModHelpers.loadSpriteFromResources("SuperNewRoles.Resources.CognitiveDeficitButton.png", 115f);
+            CognitiveDeficitbuttonSprite = ModHelpers.LoadSpriteFromResources("SuperNewRoles.Resources.CognitiveDeficitButton.png", 115f);
             return CognitiveDeficitbuttonSprite;
         }
     }

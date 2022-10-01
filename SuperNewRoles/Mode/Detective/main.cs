@@ -1,35 +1,34 @@
-﻿using Hazel;
+using System.Collections.Generic;
+using Hazel;
+using SuperNewRoles.CustomRPC;
 using SuperNewRoles.Helpers;
 using SuperNewRoles.Mode.SuperHostRoles;
-using SuperNewRoles.Roles;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
 
 namespace SuperNewRoles.Mode.Detective
 {
-    class main
+    class Main
     {
         public static bool IsNotDetectiveWin;
         public static bool IsNotDetectiveVote;
         public static bool IsDetectiveNotTask;
         public static bool IsNotDetectiveMeetingButton;
         public static PlayerControl DetectivePlayer;
-        public static Color32 DetectiveColor = new Color32(255, 0, 255, byte.MaxValue);
+        public static Color32 DetectiveColor = new(255, 0, 255, byte.MaxValue);
         public static void ClearAndReload()
         {
-            IsNotDetectiveWin = DetectiveOptions.IsWinNotCheckDetective.getBool();
-            IsNotDetectiveVote = DetectiveOptions.IsNotDetectiveVote.getBool();
-            IsDetectiveNotTask = DetectiveOptions.DetectiveIsNotTask.getBool();
-            IsNotDetectiveMeetingButton = DetectiveOptions.IsNotDetectiveMeetingButton.getBool();
+            IsNotDetectiveWin = DetectiveOptions.IsWinNotCheckDetective.GetBool();
+            IsNotDetectiveVote = DetectiveOptions.IsNotDetectiveVote.GetBool();
+            IsDetectiveNotTask = DetectiveOptions.DetectiveIsNotTask.GetBool();
+            IsNotDetectiveMeetingButton = DetectiveOptions.IsNotDetectiveMeetingButton.GetBool();
         }
-        public static void RoleSelect() {
+        public static void RoleSelect()
+        {
             DetectivePlayer = PlayerControl.LocalPlayer;
-            List<PlayerControl> selectplayers = new List<PlayerControl>();
+            List<PlayerControl> selectplayers = new();
             foreach (PlayerControl p in CachedPlayer.AllPlayers)
             {
-                if (p.isCrew())
+                if (p.IsCrew())
                 {
                     selectplayers.Add(p);
                 }
@@ -38,9 +37,9 @@ namespace SuperNewRoles.Mode.Detective
             MessageWriter writer = RPCHelper.StartRPC(CustomRPC.CustomRPC.SetDetective);
             writer.Write(random.PlayerId);
             writer.EndRPC();
-            CustomRPC.RPCProcedure.SetDetective(random.PlayerId);
-            DetectivePlayer.RpcSetName(ModHelpers.cs(DetectiveColor,DetectivePlayer.getDefaultName()));
-            DetectivePlayer.SetName(ModHelpers.cs(DetectiveColor, DetectivePlayer.getDefaultName()));
+            RPCProcedure.SetDetective(random.PlayerId);
+            DetectivePlayer.RpcSetName(ModHelpers.Cs(DetectiveColor, DetectivePlayer.GetDefaultName()));
+            DetectivePlayer.SetName(ModHelpers.Cs(DetectiveColor, DetectivePlayer.GetDefaultName()));
         }
         public static void MurderPatch(PlayerControl target)
         {
@@ -50,18 +49,18 @@ namespace SuperNewRoles.Mode.Detective
             {
                 foreach (PlayerControl p in CachedPlayer.AllPlayers)
                 {
-                    if (!p.Data.Disconnected && p.isImpostor())
+                    if (!p.Data.Disconnected && p.IsImpostor())
                     {
-                        p.RpcSetNamePrivate(ModHelpers.cs(RoleClass.ImpostorRed, p.getDefaultName()), target);
+                        p.RpcSetNamePrivate(ModHelpers.Cs(RoleClass.ImpostorRed, p.GetDefaultName()), target);
                     }
                 }
             } else
             {
                 foreach (PlayerControl p in CachedPlayer.AllPlayers)
                 {
-                    if (!p.Data.Disconnected && p.isImpostor())
+                    if (!p.Data.Disconnected && p.IsImpostor())
                     {
-                        p.SetName(ModHelpers.cs(RoleClass.ImpostorRed, p.getDefaultName()));
+                        p.SetName(ModHelpers.Cs(RoleClass.ImpostorRed, p.GetDefaultName()));
                     }
                 }
             }

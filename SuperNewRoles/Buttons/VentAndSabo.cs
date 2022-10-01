@@ -1,8 +1,6 @@
-﻿using HarmonyLib;
-using SuperNewRoles.Roles;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using HarmonyLib;
+using SuperNewRoles.CustomRPC;
+using SuperNewRoles.MapOptions;
 using UnityEngine;
 
 namespace SuperNewRoles.Buttons
@@ -10,54 +8,92 @@ namespace SuperNewRoles.Buttons
     public static class VentAndSabo
     {
 
-        [HarmonyPatch(typeof(MapBehaviour))]
-        class MapBehaviourPatch
+        [HarmonyPatch(typeof(MapTaskOverlay), nameof(MapTaskOverlay.SetIconLocation))]
+        public static class MapTaskOverlaySetIconLocationPatch
         {
-
-            [HarmonyPatch(typeof(MapBehaviour), nameof(MapBehaviour.FixedUpdate))]
-            static bool Prefix(MapBehaviour __instance)
+            public static bool Prefix(
+                MapTaskOverlay __instance,
+                [HarmonyArgument(0)] PlayerTask task)
             {
-                if (!MeetingHud.Instance) return true;  // Only run in meetings, and then set the Position of the HerePoint to the Position before the Meeting!
-                if (!MapUtilities.CachedShipStatus)
+                Il2CppSystem.Collections.Generic.List<Vector2> locations = task.Locations;
+                for (int i = 0; i < locations.Count; i++)
                 {
-                    return false;
+                    Vector3 localPosition = locations[i] / ShipStatus.Instance.MapScale;
+                    localPosition.z = -1f;
+                    PooledMapIcon pooledMapIcon = __instance.icons.Get<PooledMapIcon>();
+                    pooledMapIcon.transform.localScale = new Vector3(
+                        pooledMapIcon.NormalSize,
+                        pooledMapIcon.NormalSize,
+                        pooledMapIcon.NormalSize);
+                    if (PlayerTask.TaskIsEmergency(task))
+                    {
+                        pooledMapIcon.rend.color = Color.red;
+                        pooledMapIcon.alphaPulse.enabled = true;
+                        pooledMapIcon.rend.material.SetFloat("_Outline", 1f);
+                    }
+                    else
+                    {
+                        pooledMapIcon.rend.color = Color.yellow;
+                    }
+                    pooledMapIcon.name = task.name;
+                    pooledMapIcon.lastMapTaskStep = task.TaskStep;
+                    pooledMapIcon.transform.localPosition = localPosition;
+                    if (task.TaskStep > 0)
+                    {
+                        pooledMapIcon.alphaPulse.enabled = true;
+                        pooledMapIcon.rend.material.SetFloat("_Outline", 1f);
+                    }
+
+                    string key = $"{task.name}{i}";
+                    int index = 0;
+
+                    while (__instance.data.ContainsKey(key))
+                    {
+                        key = $"{key}_{index}";
+                        ++index;
+                    }
+
+                    __instance.data.Add(key, pooledMapIcon);
                 }
-                Vector3 vector = CachedPlayer.LocalPlayer.transform.position;
-                vector /= MapUtilities.CachedShipStatus.MapScale;
-                vector.x *= Mathf.Sign(MapUtilities.CachedShipStatus.transform.localScale.x);
-                vector.z = -1f;
-                __instance.HerePoint.transform.localPosition = vector;
-                PlayerControl.LocalPlayer.SetPlayerMaterialColors(__instance.HerePoint);
                 return false;
             }
-            [HarmonyPrefix]
-            [HarmonyPatch(typeof(MapBehaviour), nameof(MapBehaviour.ShowNormalMap))]
-            static bool Prefix3(MapBehaviour __instance)
+        }
+        [HarmonyPatch(typeof(MapBehaviour), nameof(MapBehaviour.ShowNormalMap))]
+        class MapBehaviourPatch
+        {
+            public static bool Prefix(MapBehaviour __instance)
             {
                 if (!MeetingHud.Instance)
                 {
-                    if (PlayerControl.LocalPlayer.IsUseSabo() && !ModHelpers.ShowButtons && !__instance.IsOpen)
+                    if (PlayerControl.LocalPlayer.IsUseSabo() && !__instance.IsOpen)
                     {
                         __instance.Close();
-                        FastDestroyableSingleton<HudManager>.Instance.ShowMap((Il2CppSystem.Action<MapBehaviour>)((m) => { m.ShowSabotageMap(); }));
+                        DestroyableSingleton<HudManager>.Instance.ShowMap((Il2CppSystem.Action<MapBehaviour>)((m) => { m.ShowSabotageMap(); }));
                         return false;
                     }
-                    return true;
-                }  // Only run in meetings and when the map is closed
-                if (__instance.IsOpen) return true;
-                if (!Mode.ModeHandler.isMode(Mode.ModeId.Default)) return true;
-                PlayerControl.LocalPlayer.SetPlayerMaterialColors(__instance.HerePoint);
-                __instance.GenericShow();
-                __instance.taskOverlay.Show();
-                __instance.ColorControl.SetColor(new Color(0.05f, 0.2f, 1f, 1f));
-                FastDestroyableSingleton<HudManager>.Instance.SetHudActive(false);
-                return false;
+                }
+                return true;
+            }
+        }
+        [HarmonyPatch(typeof(Vent), nameof(Vent.EnterVent))]
+        class EnterVentAnimPatch
+        {
+            public static bool Prefix([HarmonyArgument(0)] PlayerControl pc)
+            {
+                return !MapOption.VentAnimation.GetBool() || pc.AmOwner;
+            }
+        }
+        [HarmonyPatch(typeof(Vent), nameof(Vent.ExitVent))]
+        class ExitVentAnimPatch
+        {
+            public static bool Prefix([HarmonyArgument(0)] PlayerControl pc)
+            {
+                return !MapOption.VentAnimation.GetBool() || pc.AmOwner;
             }
         }
         [HarmonyPatch(typeof(Vent), nameof(Vent.CanUse))]
         public static class VentCanUsePatch
         {
-            
             public static bool Prefix(Vent __instance, ref float __result, [HarmonyArgument(0)] GameData.PlayerInfo pc, [HarmonyArgument(1)] out bool canUse, [HarmonyArgument(2)] out bool couldUse)
             {
                 float num = float.MaxValue;
@@ -66,7 +102,6 @@ namespace SuperNewRoles.Buttons
                 bool roleCouldUse = @object.IsUseVent();
 
                 var usableDistance = __instance.UsableDistance;
-
 
                 if (SubmergedCompatibility.isSubmerged())
                 {
@@ -106,7 +141,7 @@ namespace SuperNewRoles.Buttons
                     Vector3 position = __instance.transform.position;
                     num = Vector2.Distance(truePosition, position);
 
-                    canUse &= (num <= usableDistance && !PhysicsHelpers.AnythingBetween(truePosition, position, Constants.ShipOnlyMask, false));
+                    canUse &= num <= usableDistance && !PhysicsHelpers.AnythingBetween(truePosition, position, Constants.ShipOnlyMask, false);
                 }
                 __result = num;
                 return false;
@@ -116,8 +151,8 @@ namespace SuperNewRoles.Buttons
         {
             public static void Postfix(PlayerControl __instance)
             {
-                var ImpostorVentButton = DestroyableSingleton<HudManager>.Instance.ImpostorVentButton;
-                var ImpostorSabotageButton = DestroyableSingleton<HudManager>.Instance.SabotageButton;
+                var ImpostorVentButton = FastDestroyableSingleton<HudManager>.Instance.ImpostorVentButton;
+                var ImpostorSabotageButton = FastDestroyableSingleton<HudManager>.Instance.SabotageButton;
 
                 if (PlayerControl.LocalPlayer.IsUseVent())
                 {
@@ -159,10 +194,8 @@ namespace SuperNewRoles.Buttons
         {
             public static bool Prefix(Vent __instance)
             {
-                bool canUse;
-                bool couldUse;
-                __instance.CanUse(CachedPlayer.LocalPlayer.Data, out canUse, out couldUse);
-                bool canMoveInVents = !(RoleClass.MadMate.MadMatePlayer.IsCheckListPlayerControl(PlayerControl.LocalPlayer));
+                __instance.CanUse(CachedPlayer.LocalPlayer.Data, out bool canUse, out bool couldUse);
+                bool canMoveInVents = !PlayerControl.LocalPlayer.IsRole(RoleId.NiceNekomata);
                 if (!canUse) return false; // No need to execute the native method as using is disallowed anyways
 
                 bool isEnter = !PlayerControl.LocalPlayer.inVent;

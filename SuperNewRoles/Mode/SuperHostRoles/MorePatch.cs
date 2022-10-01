@@ -1,12 +1,6 @@
-﻿
 using HarmonyLib;
 using SuperNewRoles.CustomRPC;
 using SuperNewRoles.Roles;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Text;
-using UnityEngine;
 
 namespace SuperNewRoles.Mode.SuperHostRoles
 {
@@ -21,28 +15,25 @@ namespace SuperNewRoles.Mode.SuperHostRoles
             }
         }
 
-        public static bool RepairSystem(ShipStatus __instance,
+        public static bool RepairSystem
+        (ShipStatus __instance,
                 SystemTypes systemType,
                 PlayerControl player,
                 byte amount)
         {
-            if (systemType == SystemTypes.Comms)
-            {
-                FixedUpdate.SetRoleNames();
-            }
-            SyncSetting.CustomSyncSettings();
             if (systemType == SystemTypes.Sabotage && AmongUsClient.Instance.GameMode != GameModes.FreePlay)
             {
-                if ((player.isRole(RoleId.Jackal) && !RoleClass.Jackal.IsUseSabo) || player.isRole(RoleId.Demon) || player.isRole(RoleId.Arsonist) || player.isRole(RoleId.RemoteSheriff) || player.isRole(RoleId.Sheriff) || player.isRole(RoleId.truelover) || player.isRole(RoleId.FalseCharges) || player.isRole(RoleId.MadMaker)) return false;
-                if (!RoleClass.Minimalist.UseSabo && player.isRole(CustomRPC.RoleId.Minimalist)) return false;
-                if (!RoleClass.Samurai.UseSabo && player.isRole(CustomRPC.RoleId.Samurai)) return false;
-                if (!RoleClass.Egoist.UseSabo && player.isRole(CustomRPC.RoleId.Egoist)) return false;
+                if ((player.IsRole(RoleId.Jackal) && !RoleClass.Jackal.IsUseSabo) || player.IsRole(RoleId.Demon, RoleId.Arsonist, RoleId.RemoteSheriff, RoleId.Sheriff,
+                    RoleId.truelover, RoleId.FalseCharges, RoleId.MadMaker, RoleId.ToiletFan, RoleId.NiceButtoner)
+                    || (!RoleClass.Minimalist.UseSabo && player.IsRole(RoleId.Minimalist))
+                    || (!RoleClass.Samurai.UseSabo && player.IsRole(RoleId.Samurai))
+                    || (!RoleClass.Egoist.UseSabo && player.IsRole(RoleId.Egoist))) return false;
             }
             if (PlayerControl.LocalPlayer.IsUseVent() && RoleHelpers.IsComms())
             {
-                if (BattleRoyal.main.VentData.ContainsKey(CachedPlayer.LocalPlayer.PlayerId))
+                if (BattleRoyal.Main.VentData.ContainsKey(CachedPlayer.LocalPlayer.PlayerId))
                 {
-                    var data = BattleRoyal.main.VentData[CachedPlayer.LocalPlayer.PlayerId];
+                    var data = BattleRoyal.Main.VentData[CachedPlayer.LocalPlayer.PlayerId];
                     if (data != null)
                     {
                         PlayerControl.LocalPlayer.MyPhysics.RpcExitVent((int)data);
@@ -51,12 +42,13 @@ namespace SuperNewRoles.Mode.SuperHostRoles
             }
             return true;
         }
-        public static void StartMeeting(MeetingHud __instance)
+        public static void StartMeeting()
         {
             if (!AmongUsClient.Instance.AmHost) return;
             FixedUpdate.SetRoleNames(true);
             RoleClass.IsMeeting = true;
-            new LateTask(() => {
+            new LateTask(() =>
+            {
                 FixedUpdate.SetDefaultNames();
             }, 5f, "SetMeetingName");
         }

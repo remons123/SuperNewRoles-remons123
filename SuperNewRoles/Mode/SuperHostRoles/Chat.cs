@@ -1,11 +1,6 @@
-﻿
+using System.Collections.Generic;
 using HarmonyLib;
 using SuperNewRoles.EndGame;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Text;
-using UnityEngine;
 
 namespace SuperNewRoles.Mode.SuperHostRoles
 {
@@ -22,7 +17,7 @@ namespace SuperNewRoles.Mode.SuperHostRoles
                 if (!AmongUsClient.Instance.AmHost) return;
                 if (IsOldSHR && WinCond != null && AmongUsClient.Instance.AmHost)
                 {
-                    var Template = "最終結果\n勝利陣営:{0}"; 
+                    var Template = "最終結果\n勝利陣営:{0}";
                     if (WinCond == CustomGameOverReason.GodWin)
                     {
                         var players = "";
@@ -30,42 +25,17 @@ namespace SuperNewRoles.Mode.SuperHostRoles
                         {
                             foreach (PlayerControl p in Winner)
                             {
-                                if (players == "")
-                                {
-                                    players += p.nameText.text;
-                                }
-                                else
-                                {
-                                    players += "," + p.nameText.text;
-                                }
+                                if (players == "") players += p.NameText().text;
+                                else players += "," + p.NameText().text;
                             }
                         }
                         catch { }
-                        //new LateTask(() => {
                         PlayerControl.LocalPlayer.RpcSendChat(string.Format(Template + "\n勝者:{1}", "神(God)", players));
-                        //}, 3f, "SendResult");
                     }
-                    else if (WinCond == CustomGameOverReason.CrewmateWin)
-                    {
-                        //new LateTask(() => {
-                        PlayerControl.LocalPlayer.RpcSendChat(string.Format(Template, "クルーメイト(Crewmate)"));
-                        //}, 3f, "SendResult");
-                    } else if(WinCond == CustomGameOverReason.ImpostorWin)
-                    {
-                        //new LateTask(() => {
-                        PlayerControl.LocalPlayer.RpcSendChat(string.Format(Template, "インポスター(Impostor)"));
-                        //}, 3f, "SendResult");
-                    } else if(WinCond == CustomGameOverReason.JesterWin && Winner != null)
-                    {
-                        //new LateTask(() => {
-                        PlayerControl.LocalPlayer.RpcSendChat(string.Format(Template + "\n勝者:{1}", "てるてる(Jester)", Winner[0].nameText.text));
-                       // }, 3f, "SendResult");
-                    } else if (WinCond == CustomGameOverReason.WorkpersonWin && Winner != null)
-                    {
-                        // new LateTask(() => {
-                        PlayerControl.LocalPlayer.RpcSendChat(string.Format(Template + "\n勝者:{1}", "仕事人(Workperson)", Winner[0].nameText.text));
-                        //}, 3f, "SendResult");
-                    }
+                    else if (WinCond == CustomGameOverReason.CrewmateWin) PlayerControl.LocalPlayer.RpcSendChat(string.Format(Template, "クルーメイト(Crewmate)"));
+                    else if (WinCond == CustomGameOverReason.ImpostorWin) PlayerControl.LocalPlayer.RpcSendChat(string.Format(Template, "インポスター(Impostor)"));
+                    else if (WinCond == CustomGameOverReason.JesterWin && Winner != null) PlayerControl.LocalPlayer.RpcSendChat(string.Format(Template + "\n勝者:{1}", "てるてる(Jester)", Winner[0].NameText().text));
+                    else if (WinCond == CustomGameOverReason.WorkpersonWin && Winner != null) PlayerControl.LocalPlayer.RpcSendChat(string.Format(Template + "\n勝者:{1}", "仕事人(Workperson)", Winner[0].NameText().text));
                 }
                 IsOldSHR = false;
                 WinCond = null;

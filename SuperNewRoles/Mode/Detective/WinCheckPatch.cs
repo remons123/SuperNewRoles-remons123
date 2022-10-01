@@ -1,21 +1,16 @@
-﻿using SuperNewRoles.EndGame;
-using System;
-using System.Collections.Generic;
-using System.Text;
-
 namespace SuperNewRoles.Mode.Detective
 {
     class WinCheckPatch
     {
         public static bool CheckEndGame(ShipStatus __instance)
         {
-            PlayerStatistics statistics = new PlayerStatistics(__instance);
-            if (CheckAndEndGameForSabotageWin(__instance)) return false;
-            if (CheckAndEndGameForImpostorWin(__instance, statistics)) return false;
-            if (CheckAndEndGameForCrewmateWin(__instance, statistics)) return false;
-            if (!PlusModeHandler.isMode(PlusModeId.NotTaskWin) && CheckAndEndGameForTaskWin(__instance)) return false;
-            if (CheckAndEndGameForDisconnectWin(__instance)) return false;
-            return false;
+            PlayerStatistics statistics = new();
+            return CheckAndEndGameForSabotageWin(__instance)
+            || CheckAndEndGameForImpostorWin(__instance, statistics)
+            || CheckAndEndGameForCrewmateWin(__instance, statistics)
+                ? false
+                : (PlusModeHandler.IsMode(PlusModeId.NotTaskWin) || !CheckAndEndGameForTaskWin(__instance))
+&& CheckAndEndGameForDisconnectWin(__instance) && false;
         }
         public static void CustomEndGame(ShipStatus __instance, GameOverReason reason, bool showAd)
         {
@@ -55,7 +50,7 @@ namespace SuperNewRoles.Mode.Detective
         }
         public static bool CheckAndEndGameForDisconnectWin(ShipStatus __instance)
         {
-            if (main.DetectivePlayer.Data.Disconnected)
+            if (Main.DetectivePlayer.Data.Disconnected)
             {
                 CustomEndGame(__instance, GameOverReason.HumansByVote, false);
                 return true;
@@ -76,19 +71,12 @@ namespace SuperNewRoles.Mode.Detective
         {
             if (statistics.TeamImpostorsAlive >= statistics.TotalAlive - statistics.TeamImpostorsAlive && statistics.TeamImpostorsAlive != 0)
             {
-                GameOverReason endReason;
-                switch (TempData.LastDeathReason)
+                var endReason = TempData.LastDeathReason switch
                 {
-                    case DeathReason.Exile:
-                        endReason = GameOverReason.ImpostorByVote;
-                        break;
-                    case DeathReason.Kill:
-                        endReason = GameOverReason.ImpostorByKill;
-                        break;
-                    default:
-                        endReason = GameOverReason.ImpostorByVote;
-                        break;
-                }
+                    DeathReason.Exile => GameOverReason.ImpostorByVote,
+                    DeathReason.Kill => GameOverReason.ImpostorByKill,
+                    _ => GameOverReason.ImpostorByVote,
+                };
                 CustomEndGame(__instance, endReason, false);
                 return true;
             }
@@ -108,7 +96,6 @@ namespace SuperNewRoles.Mode.Detective
         {
             CustomEndGame(__instance, GameOverReason.ImpostorBySabotage, false);
             return;
-                       
         }
 
         internal class PlayerStatistics
@@ -116,7 +103,7 @@ namespace SuperNewRoles.Mode.Detective
             public int TeamImpostorsAlive { get; set; }
             public int CrewAlive { get; set; }
             public int TotalAlive { get; set; }
-            public PlayerStatistics(ShipStatus __instance)
+            public PlayerStatistics()
             {
                 GetPlayerCounts();
             }
@@ -129,24 +116,22 @@ namespace SuperNewRoles.Mode.Detective
                 for (int i = 0; i < GameData.Instance.PlayerCount; i++)
                 {
                     GameData.PlayerInfo playerInfo = GameData.Instance.AllPlayers[i];
-                    if (!playerInfo.Disconnected && (!main.IsNotDetectiveWin || playerInfo.Object.PlayerId != main.DetectivePlayer.PlayerId))
+                    if (!playerInfo.Disconnected && (!Main.IsNotDetectiveWin || playerInfo.Object.PlayerId != Main.DetectivePlayer.PlayerId))
                     {
-                        if (playerInfo.Object.isAlive())
+                        if (playerInfo.Object.IsAlive())
                         {
                             numTotalAlive++;
-
-                            if (playerInfo.Object.isImpostor())
+                            if (playerInfo.Object.IsImpostor())
                             {
                                 numImpostorsAlive++;
                             }
-                            else if (playerInfo.Object.isCrew())
+                            else if (playerInfo.Object.IsCrew())
                             {
                                 numCrewAlive++;
                             }
                         }
                     }
                 }
-
                 TeamImpostorsAlive = numImpostorsAlive;
                 TotalAlive = numTotalAlive;
                 CrewAlive = numCrewAlive;

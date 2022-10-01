@@ -1,27 +1,24 @@
-﻿using Hazel;
+using System.Collections.Generic;
 using SuperNewRoles.Helpers;
 using SuperNewRoles.Intro;
 using SuperNewRoles.Mode.SuperHostRoles;
 using SuperNewRoles.Roles;
-using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace SuperNewRoles.Mode.Werewolf
 {
-    class main
+    class Main
     {
         public static bool IsDiscussion;
         public static bool IsFirst;
         public static int AbilityTime;
         public static int DiscussionTime;
-        public static Dictionary<int,int> SoothRoles;
+        public static Dictionary<int, int> SoothRoles;
         public static List<int> HunterKillPlayers;
         public static List<int> WolfKillPlayers;
-        public static List<PlayerControl> HunterPlayers = new List<PlayerControl>();
+        public static List<PlayerControl> HunterPlayers = new();
         public static PlayerControl HunterExilePlayer;
         public static int Time;
-        public static bool IsAbility {get{return!IsDiscussion;}set{IsDiscussion=!value;}}
+        public static bool IsAbility { get { return !IsDiscussion; } set { IsDiscussion = !value; } }
         public static void ClearAndReload()
         {
             PlayerControl.GameOptions.KillCooldown = -1;
@@ -29,23 +26,24 @@ namespace SuperNewRoles.Mode.Werewolf
             CachedPlayer.LocalPlayer.PlayerControl.RpcSyncSettings(PlayerControl.GameOptions);
             foreach (PlayerControl p in CachedPlayer.AllPlayers)
             {
-                p.getDefaultName();
+                p.GetDefaultName();
             }
             IsDiscussion = true;
             IsFirst = true;
             DiscussionTime = 30;
             AbilityTime = 10;
-            SoothRoles = new Dictionary<int, int>();
-            HunterKillPlayers = new List<int>();
-            WolfKillPlayers = new List<int>();
-            HunterPlayers = new List<PlayerControl>();
+            SoothRoles = new();
+            HunterKillPlayers = new();
+            WolfKillPlayers = new();
+            HunterPlayers = new();
             HunterExilePlayer = null;
         }
         public static void IntroHandler()
         {
             if (!AmongUsClient.Instance.AmHost) return;
-            PlayerControl.LocalPlayer.RpcSendChat("今回は会議タイムです。");
-            new LateTask(() => {
+            PlayerControl.LocalPlayer.RpcSendChat(ModTranslation.GetString("WereWolfMeetingNormal"));
+            new LateTask(() =>
+            {
                 IsDiscussion = true;
                 PlayerControl.GameOptions.VotingTime = DiscussionTime;
                 CachedPlayer.LocalPlayer.PlayerControl.RpcSyncSettings(PlayerControl.GameOptions);
@@ -61,50 +59,55 @@ namespace SuperNewRoles.Mode.Werewolf
             if (IsAbility)
             {
                 PlayerControl.GameOptions.VotingTime = AbilityTime;
-                PlayerControl.LocalPlayer.RpcSendChat("今回は能力使用タイムです。");
+                PlayerControl.LocalPlayer.RpcSendChat(ModTranslation.GetString("WereWolfMeetingAbility"));
                 HunterExilePlayer = null;
-                SoothRoles = new Dictionary<int, int>();
-                HunterKillPlayers = new List<int>();
-                WolfKillPlayers = new List<int>();
+                SoothRoles = new();
+                HunterKillPlayers = new();
+                WolfKillPlayers = new();
             }
             else
             {
                 PlayerControl.GameOptions.VotingTime = DiscussionTime;
-                PlayerControl.LocalPlayer.RpcSendChat("今回は会議タイムです。");
+                PlayerControl.LocalPlayer.RpcSendChat(ModTranslation.GetString("WereWolfMeetingNormal"));
                 if (HunterExilePlayer != null)
                 {
                     HunterExilePlayer.RpcMurderPlayer(HunterExilePlayer);
                 }
-                foreach (int playerid in WolfKillPlayers) {
-                    PlayerControl player = ModHelpers.playerById((byte)playerid);
+                foreach (int playerid in WolfKillPlayers)
+                {
+                    PlayerControl player = ModHelpers.PlayerById((byte)playerid);
                     if (player != null) player.RpcMurderPlayer(player);
                 }
             }
-            if (IsDiscussion) {
+            if (IsDiscussion)
+            {
                 Time = 3;
                 foreach (var players in SoothRoles)
                 {
-                    PlayerControl source = ModHelpers.playerById((byte)players.Key);
-                    PlayerControl target = ModHelpers.playerById((byte)players.Value);
+                    PlayerControl source = ModHelpers.PlayerById((byte)players.Key);
+                    PlayerControl target = ModHelpers.PlayerById((byte)players.Value);
                     if (source == null || target == null || source.Data.Disconnected) break;
                     string Chat = "";
-                    var RoleDate = IntroDate.GetIntroDate(target.getRole(), target);
-                    var RoleName = ModTranslation.getString("Werewolf"+RoleDate.NameKey+"Name");
-                    Chat += string.Format("{0}の役職は{1}です！",target.getDefaultName(),RoleName);
-                    new LateTask(() => {
+                    var RoleDate = IntroDate.GetIntroDate(target.GetRole(), target);
+                    var RoleName = ModTranslation.GetString("Werewolf" + RoleDate.NameKey + "Name");
+                    Chat += string.Format(ModTranslation.GetString("WereWolfMediumAbilityText"), target.GetDefaultName(), RoleName);
+                    new LateTask(() =>
+                    {
                         source.RPCSendChatPrivate(Chat);
                     }, Time, "AbilityChatSend");
                     Time += 3;
                 }
                 if (exiled != null)
                 {
-                    foreach (PlayerControl player in RoleClass.SpiritMedium.SpiritMediumPlayer) {
+                    foreach (PlayerControl player in RoleClass.SpiritMedium.SpiritMediumPlayer)
+                    {
                         string Chat = "";
                         PlayerControl target = exiled.Object;
-                        var RoleDate = IntroDate.GetIntroDate(target.getRole(), target);
-                        var RoleName = ModTranslation.getString("Werewolf" + RoleDate.NameKey + "Name");
-                        Chat += string.Format("{0}の役職は{1}です！", target.getDefaultName(), RoleName);
-                        new LateTask(() => {
+                        var RoleDate = IntroDate.GetIntroDate(target.GetRole(), target);
+                        var RoleName = ModTranslation.GetString("Werewolf" + RoleDate.NameKey + "Name");
+                        Chat += string.Format(ModTranslation.GetString("WereWolfMediumAbilityText"), target.GetDefaultName(), RoleName);
+                        new LateTask(() =>
+                        {
                             player.RPCSendChatPrivate(Chat);
                         }, Time, "AbilityChatSend");
                         Time += 3;
@@ -112,18 +115,19 @@ namespace SuperNewRoles.Mode.Werewolf
                 }
                 foreach (var players in HunterKillPlayers)
                 {
-                    var player = ModHelpers.playerById((byte)players);
+                    var player = ModHelpers.PlayerById((byte)players);
                     player.RpcMurderPlayer(player);
                 }
                 if (Time <= 9)
                 {
                     Time += 7;
                 }
-                new LateTask(() => {
+                new LateTask(() =>
+                {
                     GameData.PlayerInfo target;
                     try
                     {
-                        target = ModHelpers.playerById((byte)WolfKillPlayers[0]).Data;
+                        target = ModHelpers.PlayerById((byte)WolfKillPlayers[0]).Data;
                     }
                     catch
                     {
@@ -132,29 +136,32 @@ namespace SuperNewRoles.Mode.Werewolf
                     MeetingRoomManager.Instance.AssignSelf(PlayerControl.LocalPlayer, target);
                     FastDestroyableSingleton<HudManager>.Instance.OpenMeetingRoom(PlayerControl.LocalPlayer);
                     PlayerControl.LocalPlayer.RpcStartMeeting(target);
-                    PlayerControl.LocalPlayer.RpcSetName("今回は会議タイムです。");
+                    PlayerControl.LocalPlayer.RpcSetName(ModTranslation.GetString("WereWolfMeetingNormal"));
                     SetDefaultName();
                 }, Time, "KillStartMeeting");
-                void SetDefaultName()
+
+                static void SetDefaultName()
                 {
                     new LateTask(() =>
                     {
-                        PlayerControl.LocalPlayer.RpcSetName(PlayerControl.LocalPlayer.getDefaultName());
+                        PlayerControl.LocalPlayer.RpcSetName(PlayerControl.LocalPlayer.GetDefaultName());
                     }, 5, "NameChangeMeeting");
                 }
-                SoothRoles = new Dictionary<int, int>();
-                HunterKillPlayers = new List<int>();
-            } else if (IsAbility)
+                SoothRoles = new();
+                HunterKillPlayers = new();
+            }
+            else if (IsAbility)
             {
-                new LateTask(() => {
-                    MeetingRoomManager.Instance.AssignSelf(PlayerControl.LocalPlayer,null);
+                new LateTask(() =>
+                {
+                    MeetingRoomManager.Instance.AssignSelf(PlayerControl.LocalPlayer, null);
                     FastDestroyableSingleton<HudManager>.Instance.OpenMeetingRoom(PlayerControl.LocalPlayer);
                     PlayerControl.LocalPlayer.RpcStartMeeting(null);
-                    PlayerControl.LocalPlayer.RpcSetName("今回は能力使用タイムです。");
+                    PlayerControl.LocalPlayer.RpcSetName(ModTranslation.GetString("WereWolfMeetingAbility"));
                 }, 11, "AbilityStartMeeting");
                 new LateTask(() =>
                 {
-                    PlayerControl.LocalPlayer.RpcSetName(PlayerControl.LocalPlayer.getDefaultName());
+                    PlayerControl.LocalPlayer.RpcSetName(PlayerControl.LocalPlayer.GetDefaultName());
                 }, 5, "NameChangeMeeting");
             }
             CachedPlayer.LocalPlayer.PlayerControl.RpcSyncSettings(PlayerControl.GameOptions);

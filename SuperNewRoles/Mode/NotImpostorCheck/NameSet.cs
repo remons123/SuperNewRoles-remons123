@@ -1,7 +1,3 @@
-﻿using SuperNewRoles.Mode.SuperHostRoles;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
 
 namespace SuperNewRoles.Mode.NotImpostorCheck
@@ -11,12 +7,13 @@ namespace SuperNewRoles.Mode.NotImpostorCheck
         public static void Postfix()
         {
             int LocalId = CachedPlayer.LocalPlayer.PlayerId;
-            if (main.Impostors.Contains(LocalId)) {
+            if (Main.Impostors.Contains(LocalId))
+            {
                 foreach (PlayerControl p in CachedPlayer.AllPlayers)
                 {
-                    if (p.isAlive() && p.PlayerId != LocalId)
+                    if (p.IsAlive() && p.PlayerId != LocalId)
                     {
-                        p.nameText.color = Color.white;
+                        p.NameText().color = Color.white;
                     }
                 }
             }

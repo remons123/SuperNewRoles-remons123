@@ -1,7 +1,6 @@
-﻿using SuperNewRoles.Patch;
 using System;
 using System.Collections.Generic;
-using System.Text;
+using SuperNewRoles.Patch;
 using UnityEngine;
 
 namespace SuperNewRoles.EndGame
@@ -10,10 +9,9 @@ namespace SuperNewRoles.EndGame
     {
         public static class FinalStatusData
         {
-            
-            public static List<Tuple<Vector3, bool>> localPlayerPositions = new List<Tuple<Vector3, bool>>();
-            public static List<DeadPlayer> deadPlayers = new List<DeadPlayer>();
-            public static Dictionary<int, FinalStatus> FinalStatuses = new Dictionary<int, FinalStatus>();
+            public static List<Tuple<Vector3, bool>> localPlayerPositions = new();
+            public static List<DeadPlayer> deadPlayers = new();
+            public static Dictionary<int, FinalStatus> FinalStatuses = new();
 
             public static void ClearFinalStatusData()
             {
@@ -21,10 +19,11 @@ namespace SuperNewRoles.EndGame
                 deadPlayers = new List<DeadPlayer>();
                 FinalStatuses = new Dictionary<int, FinalStatus>();
             }
-
         }
+        public static string GetStatusText(FinalStatus status) => ModTranslation.GetString("FinalStatus" + status.ToString()); //ローカル関数
+
     }
-    enum FinalStatus
+    public enum FinalStatus
     {
         Alive,
         Kill,

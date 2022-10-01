@@ -1,7 +1,4 @@
-﻿using SuperNewRoles.Mode.SuperHostRoles;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using SuperNewRoles.Mode.SuperHostRoles;
 
 namespace SuperNewRoles.Mode.NotImpostorCheck
 {
@@ -11,22 +8,22 @@ namespace SuperNewRoles.Mode.NotImpostorCheck
         {
             foreach (PlayerControl p in CachedPlayer.AllPlayers)
             {
-                if (p.isImpostor())
+                if (p.IsImpostor())
                 {
-                    SuperNewRolesPlugin.Logger.LogInfo("ImpostorName:"+p.nameText.text);
-                    main.Impostors.Add(p.PlayerId);
+                    SuperNewRolesPlugin.Logger.LogInfo("[NotImpostorCheck] ImpostorName:" + p.NameText().text);
+                    Main.Impostors.Add(p.PlayerId);
                 }
             }
             foreach (PlayerControl p in CachedPlayer.AllPlayers)
             {
-                if (main.Impostors.Contains(p.PlayerId))
+                if (Main.Impostors.Contains(p.PlayerId))
                 {
                     if (p.PlayerId != 0)
                     {
                         p.RpcSetRoleDesync(RoleTypes.Impostor);//p.Data.Role.Role);
                         foreach (var pc in CachedPlayer.AllPlayers)
                         {
-                            if (main.Impostors.Contains(pc.PlayerId))
+                            if (Main.Impostors.Contains(pc.PlayerId))
                             {
                                 p.RpcSetRoleDesync(RoleTypes.Scientist, pc);
                             }
@@ -35,7 +32,7 @@ namespace SuperNewRoles.Mode.NotImpostorCheck
                                 p.RpcSetRoleDesync(RoleTypes.Impostor, pc);
                             }
                             pc.PlayerControl.RpcSetRoleDesync(RoleTypes.Scientist, p);
-                            DestroyableSingleton<RoleManager>.Instance.SetRole(pc,RoleTypes.Crewmate);
+                            DestroyableSingleton<RoleManager>.Instance.SetRole(pc, RoleTypes.Crewmate);
                         }
                     }
                     else
@@ -45,7 +42,7 @@ namespace SuperNewRoles.Mode.NotImpostorCheck
                         {
                             if (pc.PlayerId != 0)
                             {
-                                if (main.Impostors.Contains(pc.PlayerId))
+                                if (Main.Impostors.Contains(pc.PlayerId))
                                 {
                                     p.RpcSetRoleDesync(RoleTypes.Scientist, pc);
                                 }
@@ -57,7 +54,8 @@ namespace SuperNewRoles.Mode.NotImpostorCheck
                             }
                         }
                     }
-                } else
+                }
+                else
                 {
                     p.RpcSetRole(p.Data.Role.Role);
                 }

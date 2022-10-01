@@ -1,7 +1,8 @@
-*.v2
+SuperNewRoles/SuperNewRoles.csproj.user
 SuperNewRoles/obj/
 SuperNewRoles/bin/
+*.v2
 *.dll
-SuperNewRoles/SuperNewRoles.csproj.user
 .vs/
-SuperNewRoles/obj/*
+~$TranslateData.xlsx
+.~lock.TranslateData.xlsx#

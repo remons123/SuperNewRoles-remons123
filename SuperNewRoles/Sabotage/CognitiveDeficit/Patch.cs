@@ -1,14 +1,11 @@
-﻿using HarmonyLib;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using HarmonyLib;
 
 namespace SuperNewRoles.Sabotage.CognitiveDeficit
 {
     public static class TaskBar
     {
         public static ProgressTracker Instance;
-        [HarmonyPatch(typeof(ProgressTracker),nameof(ProgressTracker.FixedUpdate))]
+        [HarmonyPatch(typeof(ProgressTracker), nameof(ProgressTracker.FixedUpdate))]
         class TaskBarPatch
         {
             public static void Postfix(ProgressTracker __instance)
@@ -18,7 +15,7 @@ namespace SuperNewRoles.Sabotage.CognitiveDeficit
                 {
                     if (SabotageManager.thisSabotage == SabotageManager.CustomSabotage.CognitiveDeficit)
                     {
-                        __instance.gameObject.SetActive(main.IsLocalEnd);
+                        __instance.gameObject.SetActive(Main.IsLocalEnd);
                     }
                 }
             }

@@ -1,20 +1,19 @@
-﻿using HarmonyLib;
+using HarmonyLib;
 using SuperNewRoles.CustomOption;
 using UnityEngine;
 
 namespace SuperNewRoles.Patch
 {
     [HarmonyPatch(typeof(ShipStatus), nameof(GameStartManager.Start))]
-    public class inversion
+    public class Inversion
     {
-
         public static GameObject skeld;
         public static GameObject mira;
         public static GameObject polus;
         public static GameObject airship;
         public static void Prefix()
         {
-            if (AmongUsClient.Instance.GameMode != GameModes.FreePlay && CustomOptions.enableMirroMap.getBool())
+            if (AmongUsClient.Instance.GameMode != GameModes.FreePlay && CustomOptions.enableMirroMap.GetBool())
             {
                 if (PlayerControl.GameOptions.MapId == 0)
                 {
@@ -39,24 +38,13 @@ namespace SuperNewRoles.Patch
                     ShipStatus.Instance.MeetingSpawnCenter = new Vector2(-19.5f, -17f);
                     ShipStatus.Instance.MeetingSpawnCenter2 = new Vector2(-19.5f, -17f);
                 }
-                else if (SubmergedCompatibility.isSubmerged())
-                {
-                    ShipStatus.Instance.InitialSpawnCenter = new Vector2(-3.4f, -28.35f);
-                    ShipStatus.Instance.MeetingSpawnCenter = new Vector2(-3.4f, -28.35f);
-                    ShipStatus.Instance.MeetingSpawnCenter2 = new Vector2(-3.4f, -28.35f);
-                    ShipStatus.Instance.transform.localScale = new Vector3(-0.8f, 0.8f, 0.9412f);
-                     
-                }
-                /*else if(PlayerControl.GameOptions.MapId == 4 && CustomOptionHolder.InversionAShip.getBool())
+                /*else if(PlayerControl.GameOptions.MapId == 4 && CustomOptionHolder.InversionAShip.GetBool())
                 {
                     airship = GameObject.Find("Airship(Clone)");
                     airship.transform.localScale = new Vector3(-0.7f, 0.7f, 1f);
                     airshipの選択スポーンシステムの対応ができてないため非表示
                 }*/
             }
-
         }
-
     }
-
 }

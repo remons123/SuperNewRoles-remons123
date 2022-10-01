@@ -1,7 +1,5 @@
-﻿using SuperNewRoles.Roles;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using SuperNewRoles.CustomRPC;
+using SuperNewRoles.Roles;
 using UnityEngine;
 
 namespace SuperNewRoles.Mode.Werewolf
@@ -10,48 +8,49 @@ namespace SuperNewRoles.Mode.Werewolf
     {
         public static void YouAreHandle(IntroCutscene __instance)
         {
-            if (main.HunterPlayers.IsCheckListPlayerControl(PlayerControl.LocalPlayer))
+            if (Main.HunterPlayers.IsCheckListPlayerControl(PlayerControl.LocalPlayer))
             {
                 __instance.YouAreText.color = Color.green;
-                __instance.RoleText.text = "ハンター";
+                __instance.RoleText.text = ModTranslation.GetString("WareWolfHunter");
                 __instance.RoleText.color = Color.green;
-                __instance.RoleBlurbText.text = "誰かを道連れにしよう";
+                __instance.RoleBlurbText.text = ModTranslation.GetString("WereWolfHunterText");
                 __instance.RoleBlurbText.color = Color.green;
-            } else if (PlayerControl.LocalPlayer.isImpostor())
+            }
+            else if (PlayerControl.LocalPlayer.IsImpostor())
             {
                 __instance.YouAreText.color = RoleClass.ImpostorRed;
-                __instance.RoleText.text = "人狼";
+                __instance.RoleText.text = ModTranslation.GetString("WareWolfImpostor");
                 __instance.RoleText.color = RoleClass.ImpostorRed;
-                __instance.RoleBlurbText.text = "市民を食べて勝利しよう";
+                __instance.RoleBlurbText.text = ModTranslation.GetString("WereWolfImpostorText");
                 __instance.RoleBlurbText.color = RoleClass.ImpostorRed;
             }
-            else if (PlayerControl.LocalPlayer.isRole(CustomRPC.RoleId.MadMate))
+            else if (PlayerControl.LocalPlayer.IsRole(RoleId.MadMate))
             {
                 __instance.YouAreText.color = RoleClass.ImpostorRed;
-                __instance.RoleText.text = "狂人";
+                __instance.RoleText.text = ModTranslation.GetString("WareWolfMadmate");
                 __instance.RoleText.color = RoleClass.ImpostorRed;
-                __instance.RoleBlurbText.text = "人狼を助けて勝利しよう";
+                __instance.RoleBlurbText.text = ModTranslation.GetString("WereWolfMadmateText");
                 __instance.RoleBlurbText.color = RoleClass.ImpostorRed;
             }
-            else if (PlayerControl.LocalPlayer.isRole(CustomRPC.RoleId.DefaultRole))
+            else if (PlayerControl.LocalPlayer.IsRole(RoleId.DefaultRole))
             {
-                __instance.RoleText.text = "市民";
-                __instance.RoleBlurbText.text = "議論で人狼を追放して勝利しよう";
+                __instance.RoleText.text = ModTranslation.GetString("WareWolfCrewmate");
+                __instance.RoleBlurbText.text = ModTranslation.GetString("WereWolfCrewmateText");
             }
-            else if (PlayerControl.LocalPlayer.isRole(CustomRPC.RoleId.SoothSayer))
+            else if (PlayerControl.LocalPlayer.IsRole(RoleId.SoothSayer))
             {
                 __instance.YouAreText.color = RoleClass.SoothSayer.color;
-                __instance.RoleText.text = "占い師";
+                __instance.RoleText.text = ModTranslation.GetString("WareWolfFortuneTeller");
                 __instance.RoleText.color = RoleClass.SoothSayer.color;
-                __instance.RoleBlurbText.text = "占って人狼を発見して勝利しよう";
+                __instance.RoleBlurbText.text = ModTranslation.GetString("WereWolfFortuneTellerText");
                 __instance.RoleBlurbText.color = RoleClass.SoothSayer.color;
             }
-            else if (PlayerControl.LocalPlayer.isRole(CustomRPC.RoleId.SoothSayer))
+            else if (PlayerControl.LocalPlayer.IsRole(RoleId.SoothSayer))
             {
                 __instance.YouAreText.color = RoleClass.SpiritMedium.color;
-                __instance.RoleText.text = "霊媒師";
+                __instance.RoleText.text = ModTranslation.GetString("WareWolfMedium");
                 __instance.RoleText.color = RoleClass.SpiritMedium.color;
-                __instance.RoleBlurbText.text = "死んだ人の役職を調べて勝利しよう";
+                __instance.RoleBlurbText.text = ModTranslation.GetString("WereWolfMediumText");
                 __instance.RoleBlurbText.color = RoleClass.SpiritMedium.color;
             }
         }

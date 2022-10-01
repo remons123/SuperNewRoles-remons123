@@ -1,12 +1,5 @@
-﻿
-using SuperNewRoles.CustomRPC;
-using SuperNewRoles.Patch;
-using SuperNewRoles.Roles;
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Text;
-using UnityEngine;
+using SuperNewRoles.CustomRPC;
 
 namespace SuperNewRoles.Mode.Werewolf
 {
@@ -21,15 +14,15 @@ namespace SuperNewRoles.Mode.Werewolf
         }
         public static void OneOrNotListSet()
         {
-            var Impoonepar = new List<RoleId>();
-            var Imponotonepar = new List<RoleId>();
-            var Neutonepar = new List<RoleId>();
-            var Neutnotonepar = new List<RoleId>();
-            var Crewonepar = new List<RoleId>();
-            var Crewnotonepar = new List<RoleId>();
-            if (!(CustomOption.CustomOptions.MadMateOption.getString().Replace("0%", "") == ""))
+            List<RoleId> Impoonepar = new();
+            List<RoleId> Imponotonepar = new();
+            List<RoleId> Neutonepar = new();
+            List<RoleId> Neutnotonepar = new();
+            List<RoleId> Crewonepar = new();
+            List<RoleId> Crewnotonepar = new();
+            if (CustomOption.CustomOptions.MadMateOption.GetString().Replace("0%", "") != "")
             {
-                int OptionDate = int.Parse(CustomOption.CustomOptions.MadMateOption.getString().Replace("0%", ""));
+                int OptionDate = int.Parse(CustomOption.CustomOptions.MadMateOption.GetString().Replace("0%", ""));
                 RoleId ThisRoleId = RoleId.MadMate;
                 if (OptionDate == 10)
                 {
@@ -43,9 +36,9 @@ namespace SuperNewRoles.Mode.Werewolf
                     }
                 }
             }
-            if (!(CustomOption.CustomOptions.SoothSayerOption.getString().Replace("0%", "") == ""))
+            if (CustomOption.CustomOptions.SoothSayerOption.GetString().Replace("0%", "") != "")
             {
-                int OptionDate = int.Parse(CustomOption.CustomOptions.SoothSayerOption.getString().Replace("0%", ""));
+                int OptionDate = int.Parse(CustomOption.CustomOptions.SoothSayerOption.GetString().Replace("0%", ""));
                 RoleId ThisRoleId = RoleId.SoothSayer;
                 if (OptionDate == 10)
                 {
@@ -59,14 +52,11 @@ namespace SuperNewRoles.Mode.Werewolf
                     }
                 }
             }
-            if (!(CustomOption.CustomOptions.SpiritMediumOption.getString().Replace("0%", "") == ""))
+            if (CustomOption.CustomOptions.SpiritMediumOption.GetString().Replace("0%", "") != "")
             {
-                int OptionDate = int.Parse(CustomOption.CustomOptions.SpiritMediumOption.getString().Replace("0%", ""));
+                int OptionDate = int.Parse(CustomOption.CustomOptions.SpiritMediumOption.GetString().Replace("0%", ""));
                 RoleId ThisRoleId = RoleId.SpiritMedium;
-                if (OptionDate == 10)
-                {
-                    Crewonepar.Add(ThisRoleId);
-                }
+                if (OptionDate == 10) Crewonepar.Add(ThisRoleId);
                 else
                 {
                     for (int i = 1; i <= OptionDate; i++)
@@ -75,10 +65,10 @@ namespace SuperNewRoles.Mode.Werewolf
                     }
                 }
             }
-            if (!(Mode.Werewolf.WerewolfOptions.WerewolfHunterOption.getString().Replace("0%", "") == ""))
+            /*if (WerewolfOptions.WerewolfHunterOption.GetString().Replace("0%", "") != "")
             {
-                SuperNewRolesPlugin.Logger.LogInfo("ADDWOLF@ame");
-                int OptionDate = int.Parse(Mode.Werewolf.WerewolfOptions.WerewolfHunterOption.getString().Replace("0%", ""));
+                SuperNewRolesPlugin.Logger.LogInfo("[WereWolf] ADDWOLF@ame");
+                int OptionDate = int.Parse(WerewolfOptions.WerewolfHunterOption.GetString().Replace("0%", ""));
                 RoleId ThisRoleId = RoleId.Hunter;
                 if (OptionDate == 10)
                 {
@@ -91,8 +81,7 @@ namespace SuperNewRoles.Mode.Werewolf
                         Crewnotonepar.Add(ThisRoleId);
                     }
                 }
-
-            }
+            }*/
             AllRoleSetClass.Impoonepar = Impoonepar;
             AllRoleSetClass.Imponotonepar = Imponotonepar;
             AllRoleSetClass.Neutonepar = Neutonepar;

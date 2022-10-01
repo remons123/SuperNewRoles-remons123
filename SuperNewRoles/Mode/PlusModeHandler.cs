@@ -1,7 +1,5 @@
-﻿using SuperNewRoles.Mode.PlusMode;
-using System;
 using System.Collections.Generic;
-using System.Text;
+using SuperNewRoles.Mode.PlusMode;
 
 namespace SuperNewRoles.Mode
 {
@@ -19,27 +17,25 @@ namespace SuperNewRoles.Mode
             thisPlusModes = new List<PlusModeId>();
             foreach (PlusModeId mode in PlusModeIds)
             {
-                if (isMode(mode))
+                if (IsMode(mode))
                 {
                     thisPlusModes.Add(mode);
                 }
             }
         }
-        public static List<PlusModeId> PlusModeIds = new List<PlusModeId>()
+        public static List<PlusModeId> PlusModeIds = new()
         {
             PlusModeId.NotSabotage,
             PlusModeId.NotTaskWin
         };
-        public static bool isMode(PlusModeId Modeid)
+        public static bool IsMode(PlusModeId Modeid)
         {
-            switch (Modeid)
+            return Modeid switch
             {
-                case PlusModeId.NotSabotage:
-                    return Options.PlusModeSetting.getBool() && Options.NoSabotageModeSetting.getBool();
-                case PlusModeId.NotTaskWin:
-                    return Options.PlusModeSetting.getBool() && Options.NoTaskWinModeSetting.getBool();
-            }
-            return false;
+                PlusModeId.NotSabotage => Options.PlusModeSetting.GetBool() && Options.NoSabotageModeSetting.GetBool(),
+                PlusModeId.NotTaskWin => Options.PlusModeSetting.GetBool() && Options.NoTaskWinModeSetting.GetBool(),
+                _ => false,
+            };
         }
     }
 }

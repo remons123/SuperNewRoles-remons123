@@ -1,26 +1,23 @@
-﻿using HarmonyLib;
-using System.Linq;
-using System;
-using System.Collections;
 using System.Collections.Generic;
+using SuperNewRoles.CustomRPC;
 using UnityEngine;
-using SuperNewRoles.Roles;
+
 namespace SuperNewRoles.Intro
 {
-        public class TeamDate
-        {
-            public string NameKey;
-            public Color color;
-            public Color BackGround;
-            public List<CustomRPC.RoleId> RoleIds;
+    public class TeamDate
+    {
+        public string NameKey;
+        public Color color;
+        public Color BackGround;
+        public List<RoleId> RoleIds;
 
-        TeamDate(string NameKey, Color color, Color BackGround, List<CustomRPC.RoleId> RoleId)
+        TeamDate(string NameKey, Color color, Color BackGround, List<RoleId> RoleId)
         {
             this.color = color;
             this.BackGround = BackGround;
             this.NameKey = NameKey;
-            this.RoleIds = RoleId;
+            RoleIds = RoleId;
         }
-        public static TeamDate VultureTeam = new TeamDate("Test",Color.black,Color.yellow,new List<CustomRPC.RoleId> { CustomRPC.RoleId.Sheriff});
+        public static TeamDate VultureTeam = new("Test", Color.black, Color.yellow, new List<RoleId> { RoleId.Sheriff });
     }
 }

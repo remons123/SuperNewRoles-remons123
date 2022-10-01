@@ -1,32 +1,24 @@
-﻿
 using HarmonyLib;
-using Hazel;
-using InnerNet;
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Text;
-using UnityEngine;
+using SuperNewRoles.Mode.SuperHostRoles;
 
 namespace SuperNewRoles.Mode.NotImpostorCheck
 {
     public static class NotBlackOut
     {
-
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.CheckForEndVoting))]
         class CheckForEndVotingPatch
         {
-            public static void Prefix(MeetingHud __instance)
+            public static void Prefix()
             {
-				if (ModeHandler.isMode(Mode.ModeId.NotImpostorCheck))
-				{
-					EndMeetingPatch();
-				}
-				else if (ModeHandler.isMode(ModeId.SuperHostRoles)) {
-					SuperHostRoles.MorePatch.MeetingEnd();
-				}
+                if (ModeHandler.IsMode(ModeId.NotImpostorCheck))
+                {
+                    EndMeetingPatch();
+                }
+                else if (ModeHandler.IsMode(ModeId.SuperHostRoles))
+                {
+                    MorePatch.MeetingEnd();
+                }
             }
-
         }
         public static void EndMeetingPatch()
         {/*
@@ -40,7 +32,7 @@ namespace SuperNewRoles.Mode.NotImpostorCheck
 			{
 				return;
 			}
-			int clientId = pc.getClientId();
+			int clientId = pc.GetClientId();
 			byte reactorId = 3;
 			if (PlayerControl.GameOptions.MapId == 2)
 			{
@@ -87,6 +79,7 @@ namespace SuperNewRoles.Mode.NotImpostorCheck
 					AmongUsClient.Instance.FinishRpcImmediately(val);
 				}
 			}
-		*/}
-	}
+		*/
+        }
+    }
 }

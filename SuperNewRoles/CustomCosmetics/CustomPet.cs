@@ -1,11 +1,3 @@
-﻿using HarmonyLib;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
-using UnityEngine;
-
 namespace SuperNewRoles.CustomCosmetics
 {
     public static class CustomPet
@@ -62,7 +54,6 @@ namespace SuperNewRoles.CustomCosmetics
                     }
                 }
                 SuperNewRolesPlugin.Logger.LogInfo("ペット読み込み処理終了");
-
             }
         }*/
     }

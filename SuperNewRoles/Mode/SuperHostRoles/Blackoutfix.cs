@@ -1,7 +1,4 @@
-﻿using HarmonyLib;
-using System;
-using System.Collections.Generic;
-using System.Text;
+using HarmonyLib;
 
 namespace SuperNewRoles.Mode.SuperHostRoles
 {
@@ -10,10 +7,10 @@ namespace SuperNewRoles.Mode.SuperHostRoles
         [HarmonyPatch(typeof(MeetingHud), nameof(MeetingHud.CheckForEndVoting))]
         public class CheckForEndVotingPatch
         {
-            public static void Prefix(MeetingHud __instance)
+            public static void Prefix()
             {
                 if (!AmongUsClient.Instance.AmHost) return;
-                if (Mode.ModeHandler.isMode(Mode.ModeId.SuperHostRoles))
+                if (ModeHandler.IsMode(ModeId.SuperHostRoles))
                 {
                     EndMeetingPatch();
                 }

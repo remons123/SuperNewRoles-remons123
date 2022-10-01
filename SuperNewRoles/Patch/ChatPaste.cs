@@ -1,10 +1,10 @@
-﻿using UnityEngine;
+using UnityEngine;
 namespace SuperNewRoles.Patch
 {
     class ChatPaste
     {
-        [HarmonyLib.HarmonyPatch(typeof(KeyboardJoystick),nameof(KeyboardJoystick.Update))]
-        class pastepatch
+        [HarmonyLib.HarmonyPatch(typeof(KeyboardJoystick), nameof(KeyboardJoystick.Update))]
+        class Pastepatch
         {
             static void Postfix()
             {
